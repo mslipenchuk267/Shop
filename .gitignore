@@ -10,5 +10,8 @@ npm-debug.*
 web-build/
 web-report/
 
+# vscode hidden files
+.vscode/*
+
 # macOS
 .DS_Store
