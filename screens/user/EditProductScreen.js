@@ -38,6 +38,7 @@ const EditProductScreen = props => {
             // doing +price sets the string to a number
             dispatch(productsActions.createProduct(title, description, imageUrl, +price));
         }
+        props.navigation.goBack();
     }, [dispatch, prodId, title, description, imageUrl, price]);
 
     useEffect(() => {
