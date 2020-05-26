@@ -35,6 +35,18 @@ const ProductsOverviewScreen = props => {
     setIsLoading(false);
   }, [dispatch, setIsLoading, setError]);
 
+  useEffect(() => {
+    // fires when transition begins with willFocus
+    const willFocusSub = props.navigation.addListener(
+      'willFocus',
+      loadProducts
+    );
+
+    return () => {
+      willFocusSub.remove();
+    };
+  }, [loadProducts]);
+
   // Get products from database
   useEffect(() => {
     loadProducts()

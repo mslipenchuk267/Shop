@@ -6,9 +6,6 @@ export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
 export const fetchProducts = () => {
-
-
-
     return async dispatch => {
         // since we are returning a dispatch function,
         // execute any async code you want! becuase redux-thunk will know what to do
