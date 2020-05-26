@@ -13,22 +13,33 @@ export const fetchProducts = () => {
         // since we are returning a dispatch function,
         // execute any async code you want! becuase redux-thunk will know what to do
         // fetch returns a promise
-        const response = await fetch('https://rn-course-17046.firebaseio.com/products.json');
+        try {
+            const response = await fetch(
+                'https://rn-course-17046.firebaseio.com/products.json'
+            );
 
-        const resData = await response.json();
-        const loadedProducts = [];
-        for (const key in resData) {
-            loadedProducts.push(new Product(
-                key, 
-                'u1', 
-                resData[key].title, 
-                resData[key].imageUrl, 
-                resData[key].description, 
-                resData[key].price
-            ));
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+    
+            const resData = await response.json();
+            const loadedProducts = [];
+            for (const key in resData) {
+                loadedProducts.push(new Product(
+                    key,
+                    'u1',
+                    resData[key].title,
+                    resData[key].imageUrl,
+                    resData[key].description,
+                    resData[key].price
+                ));
+            }
+    
+            dispatch({ type: SET_PRODUCTS, products: loadedProducts })
+        } catch (err) {
+            // send to custom analytics server
+            throw err;
         }
-
-        dispatch({ type: SET_PRODUCTS, products: loadedProducts })
     }
 };
 
@@ -73,7 +84,7 @@ export const createProduct = (title, description, imageUrl, price) => {
         });
     };
 
-    
+
 };
 
 export const updateProduct = (id, title, description, imageUrl) => {
