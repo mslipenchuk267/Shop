@@ -18,7 +18,7 @@ export const fetchProducts = () => {
             if (!response.ok) {
                 throw new Error('Something went wrong!');
             }
-    
+
             const resData = await response.json();
             const loadedProducts = [];
             for (const key in resData) {
@@ -31,7 +31,7 @@ export const fetchProducts = () => {
                     resData[key].price
                 ));
             }
-    
+
             dispatch({ type: SET_PRODUCTS, products: loadedProducts })
         } catch (err) {
             // send to custom analytics server
@@ -41,26 +41,34 @@ export const fetchProducts = () => {
 };
 
 export const deleteProduct = productId => {
-    return { type: DELETE_PRODUCT, pid: productId };
+    return async dispatch => {
+        await fetch(`https://rn-course-17046.firebaseio.com/products/${productId}.json`,
+            {
+                method: 'DELETE'
+            }
+        );
+        dispatch({ type: DELETE_PRODUCT, pid: productId });
+    };
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
     return async dispatch => {
         // since we are returning a dispatch function,
-        // execute any async code you want! becuase redux-thunk will know what to do
+        // execute any async code you want! because redux-thunk will know what to do
         // fetch returns a promise
-        const response = await fetch('https://rn-course-17046.firebaseio.com/products.json', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title,
-                description,
-                imageUrl,
-                price
-            })
-        });
+        const response = await fetch('https://rn-course-17046.firebaseio.com/products.json',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title,
+                    description,
+                    imageUrl,
+                    price
+                })
+            });
 
         const resData = await response.json();
         // this only gets dispatched once the above operations are done.
@@ -85,17 +93,34 @@ export const createProduct = (title, description, imageUrl, price) => {
 };
 
 export const updateProduct = (id, title, description, imageUrl) => {
-    return {
-        type: UPDATE_PRODUCT,
-        pid: id,
-        productData: {
-            // title: title,
-            // description: description,
-            // imageUrl: imageUrl,
-            // below is the same as above
-            title,
-            description,
-            imageUrl
-        }
-    };
+    return async dispatch => {
+        await fetch(`https://rn-course-17046.firebaseio.com/products/${id}.json`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title,
+                    description,
+                    imageUrl
+                })
+            });
+
+        dispatch({
+            type: UPDATE_PRODUCT,
+            pid: id,
+            productData: {
+                // title: title,
+                // description: description,
+                // imageUrl: imageUrl,
+                // below is the same as above
+                title,
+                description,
+                imageUrl
+            }
+        });
+    }
+
+
 };
